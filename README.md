@@ -991,7 +991,7 @@ WidgetPeersGrowth(context)
 
 ```
 
-!(peer5.png)[]
+![peer5.png]()
 
 
 # Summary
