@@ -210,21 +210,7 @@ WidgetPeersGeneralInfo(context)
 ```
 
 
-    HBox(children=(Text(value='', description='RIC:', placeholder='RIC'),))
-
-
-
-    HBox(children=(Dropdown(description='Currency:', index=4, options=(('Canada dollar', 'CAD'), ('European Union …
-
-
-
-    Output()
-
-
-
-
-
-    <__main__.WidgetPeersGeneralInfo at 0x2335fd354c8>
+![Peers - Company Details](Peer1.png)
 
 
 
@@ -372,17 +358,7 @@ WidgetPeersValuation(context)
 ```
 
 
-    HBox(children=(Text(value='', description='RIC:', placeholder='RIC'), Button(description='Run', style=ButtonSt…
-
-
-
-    Output()
-
-
-
-
-
-    <__main__.WidgetPeersValuation at 0x1742b3e8ac8>
+![Peers - Valuation metrics](Peer2.png)
 
 
 
@@ -582,17 +558,7 @@ WidgetPeersProfitability(context)
 ```
 
 
-    HBox(children=(Text(value='', description='RIC:', placeholder='RIC'), Button(description='Run', style=ButtonSt…
-
-
-
-    Output()
-
-
-
-
-
-    <__main__.WidgetPeersProfitability at 0x2335fe238c8>
+![Peers - Profitability Ratios](Peer3.png)
 
 
 
@@ -742,21 +708,7 @@ WidgetPeersBalanceSheet(context)
 ```
 
 
-    HBox(children=(Text(value='', description='RIC:', placeholder='RIC'),))
-
-
-
-    HBox(children=(Dropdown(description='Currency:', index=4, options=(('Canada dollar', 'CAD'), ('European Union …
-
-
-
-    Output()
-
-
-
-
-
-    <__main__.WidgetPeersBalanceSheet at 0x2335fe1cf48>
+![Peers - Balance Sheet Ratios](Peer4.png)
 
 
 
@@ -991,7 +943,7 @@ WidgetPeersGrowth(context)
 
 ```
 
-![peer5.png]()
+![Peers - Growth Ratios](Peer5.png)
 
 
 # Summary
