@@ -47,7 +47,7 @@ warnings.filterwarnings('ignore')
 pd.options.display.float_format = '{:,.2f}'.format
 context = {"RIC":"IBM.N","currency":"USD"}
 currency_list= [tuple(row) for row in csv.reader(open("currencies.csv", 'rU'))]
-ek.set_app_key('c63397dc6fe148af94525970312b5742ab83e4d4')
+ek.set_app_key('<app key>')
 ```
 
 ## Peers - Company Details
