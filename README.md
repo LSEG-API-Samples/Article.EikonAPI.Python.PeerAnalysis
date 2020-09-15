@@ -147,7 +147,11 @@ class WidgetPeersGeneralInfo:
             #get data
             try:
                 df, err = ek.get_data(_ric,fields )
-                peer_rics, err = ek.get_data("Peers({})".format(_ric), ["TR.PrimaryInstrument"])                
+                if err!=None:
+                    raise ValueError(err[0]['message'])
+                peer_rics, err = ek.get_data("Peers({})".format(_ric), ["TR.PrimaryInstrument"])  
+                if err!= None:
+                    raise ValueError(err[0]['message'])
                 df1, err= ek.get_data(peer_rics['Primary Instrument RIC'].tolist(),["TR.CommonName",
                                                                 "TR.HeadquartersCountry",
                                                                 "TR.ExchangeName",
@@ -155,52 +159,42 @@ class WidgetPeersGeneralInfo:
                                                                 "TR.GICSSector",
                                                                 "TR.CompanyMarketCap(scale=6, curn='{}')".format(_currency),
                                                                 "TR.EV(scale=6, curn='{}')".format(_currency)])
-                
-            except ValueError:
-                self.status_label.value = ValueError
+                if err!= None:
+                    raise ValueError(err[0]['message'])
+            except ValueError as e:               
+                self.status_label.value = str(e)
                 return
-                 
-            
-            #check if variables is exist
-            if df.iloc[:,1:].isnull().values.all():
-                self.status_label.value =  err[0]['message']
-                return
-            else:
-                #display(df)
-                self.output.clear_output()
-                self.commonname_value_label.value = df["Company Common Name"][0]
-                self.country_value_label.value = df["Country of Headquarters"][0]
-                self.exchange_value_label.value = df["Exchange Name"][0]
-                self.industry_value_label.value = df["TRBC Industry Group Name"][0]
-                self.sector_value_label.value = df["GICS Sector Name"][0]
-                self.ticker_value_label.value = str(df["Ticker Symbol"][0])
-                df['Company Market Cap'] = df['Company Market Cap'].map('{:,.2f}'.format)
-                df['Enterprise Value (Daily Time Series)'] = df['Enterprise Value (Daily Time Series)'].map('{:,.2f}'.format)
-                self.marketcap_value_label.value = df['Company Market Cap'][0]
-                self.enterprise_value_label.value = df['Enterprise Value (Daily Time Series)'][0]
-                self.title_label.value = r'\(\underline{\textbf{Peers for %s}}\)'%(df["Company Common Name"][0])
-                display(VBox([HBox([self.commonname_label,self.commonname_value_label,self.country_label,self.country_value_label]),
-                             HBox([self.exchange_label, self.exchange_value_label,self.industry_label, self.industry_value_label]),
-                             HBox([self.sector_label, self.sector_value_label,self.ticker_label, self.ticker_value_label]),
-                             HBox([self.marketcap_label, self.marketcap_value_label,self.enterprise_label, self.enterprise_value_label]),
-                             HBox([self.linebreak_label]),
-                             HBox([self.title_label])
-                             ]))
+
+            self.output.clear_output()
+            self.commonname_value_label.value = df["Company Common Name"][0]
+            self.country_value_label.value = df["Country of Headquarters"][0]
+            self.exchange_value_label.value = df["Exchange Name"][0]
+            self.industry_value_label.value = df["TRBC Industry Group Name"][0]
+            self.sector_value_label.value = df["GICS Sector Name"][0]
+            self.ticker_value_label.value = str(df["Ticker Symbol"][0])
+            df['Company Market Cap'] = df['Company Market Cap'].map('{:,.2f}'.format)
+            df['Enterprise Value (Daily Time Series)'] = df['Enterprise Value (Daily Time Series)'].map('{:,.2f}'.format)
+            self.marketcap_value_label.value = df['Company Market Cap'][0]
+            self.enterprise_value_label.value = df['Enterprise Value (Daily Time Series)'][0]
+            self.title_label.value = r'\(\underline{\textbf{Peers for %s}}\)'%(df["Company Common Name"][0])
+            display(VBox([HBox([self.commonname_label,self.commonname_value_label,self.country_label,self.country_value_label]),
+                         HBox([self.exchange_label, self.exchange_value_label,self.industry_label, self.industry_value_label]),
+                         HBox([self.sector_label, self.sector_value_label,self.ticker_label, self.ticker_value_label]),
+                         HBox([self.marketcap_label, self.marketcap_value_label,self.enterprise_label, self.enterprise_value_label]),
+                         HBox([self.linebreak_label]),
+                         HBox([self.title_label])
+                         ]))
                 
-                df1.sort_values(by=['Company Market Cap'], ascending=False, inplace=True)
-                #df1['Company Market Cap'] = df1['Company Market Cap'].map('{:,.2f}'.format)
-                #df1['Enterprise Value (Daily Time Series)'] = df1['Enterprise Value (Daily Time Series)'].map('{:,.2f}'.format)
-                df1 = df1.set_index('Instrument')
-                df1.columns=['Company Name',
-                            'Country',
-                            'Exchange',
-                            'Industry',
-                            'Sector',
-                            'Market Cap',
-                            'Enterprise Value']
-                display(df1)
-                #add table               
-               
+            df1.sort_values(by=['Company Market Cap'], ascending=False, inplace=True)
+            df1 = df1.set_index('Instrument')
+            df1.columns=['Company Name',
+                        'Country',
+                        'Exchange',
+                        'Industry',
+                        'Sector',
+                        'Market Cap',
+                        'Enterprise Value']
+            display(df1)
             #add text to show error
             if err != None:
                 print('Error:')
@@ -298,63 +292,57 @@ class WidgetPeersValuation:
                       "TR.DividendYield"]
             #get data
             try:
-                df, err = ek.get_data(_ric,fields )     
+                df, err = ek.get_data(_ric,fields )
+                if err!=None:
+                    raise ValueError(err[0]['message'])
                 peer_rics, err = ek.get_data("Peers({})".format(_ric), ["TR.PrimaryInstrument"])
+                if err!=None:
+                    raise ValueError(err[0]['message'])
                 df1, err = ek.get_data(peer_rics['Primary Instrument RIC'].tolist(), fields)
+                if err!=None:
+                    raise ValueError(err[0]['message'])
                 
-            except ValueError:
-                self.status_label.value = ValueError
+            except ValueError as e:
+                self.status_label.value = str(e)
                 return
                  
             
-            #check if variables is exist
-            if df.iloc[:,1:].isnull().values.all():
-                self.status_label.value =  err[0]['message']
-                return
-            else:
-                
-                self.output.clear_output()
 
-                self.title_label.value = r'\(\underline{\textbf{Valuation - Peers of %s}}\)'%(df["Company Common Name"][0])
-               
                 
-                df_concat = pd.concat((df, df1))
-                df = df.set_index('Instrument')
-                df.loc["Peer Median"] = df_concat.median()
-                df.loc["Peer Average"] = df_concat.mean()
-                df.loc["Peer Median", "Company Common Name"] = ""
-                df.loc["Peer Average", "Company Common Name"] = ""
-                df.columns=["Company Name",
-                           "Trailing P/E LTM",
-                           "Forward P/E FY1",
-                           "Price/Sales LTM",
-                           "EV/EBITDA LTM",
-                           "Price/Cash Flow LTM",
-                           "Price/Book LTM",
-                           "Dividend Yield Latest(%)"]
-                display(df)
-                display(VBox([HBox([self.linebreak_label]),HBox([self.title_label]),HBox([self.linebreak_label])]))
-                df1 = df1.set_index('Instrument')
-                df1.columns=["Company Name",
-                           "Trailing P/E LTM",
-                           "Forward P/E FY1",
-                           "Price/Sales LTM",
-                           "EV/EBITDA LTM",
-                           "Price/Cash Flow LTM",
-                           "Price/Book LTM",
-                           "Dividend Yield Latest (%)"]
-                display(df1)
-                
-               
-                #add table               
-               
+            self.output.clear_output()
+            self.title_label.value = r'\(\underline{\textbf{Valuation - Peers of %s}}\)'%(df["Company Common Name"][0])
+            df_concat = pd.concat((df, df1))
+            df = df.set_index('Instrument')
+            df.loc["Peer Median"] = df_concat.median()
+            df.loc["Peer Average"] = df_concat.mean()
+            df.loc["Peer Median", "Company Common Name"] = ""
+            df.loc["Peer Average", "Company Common Name"] = ""
+            df.columns=["Company Name",
+                       "Trailing P/E LTM",
+                       "Forward P/E FY1",
+                       "Price/Sales LTM",
+                       "EV/EBITDA LTM",
+                       "Price/Cash Flow LTM",
+                       "Price/Book LTM",
+                       "Dividend Yield Latest(%)"]
+            display(df)
+            display(VBox([HBox([self.linebreak_label]),HBox([self.title_label]),HBox([self.linebreak_label])]))
+            df1 = df1.set_index('Instrument')
+            df1.columns=["Company Name",
+                       "Trailing P/E LTM",
+                       "Forward P/E FY1",
+                       "Price/Sales LTM",
+                       "EV/EBITDA LTM",
+                       "Price/Cash Flow LTM",
+                       "Price/Book LTM",
+                       "Dividend Yield Latest (%)"]
+            display(df1)
             #add text to show error
             if err != None:
                 print('Error:')
                 print(err, sep = "\n")
                     
 WidgetPeersValuation(context)
-
 ```
 
 
@@ -513,41 +501,33 @@ class WidgetPeersProfitability:
             #get data
             try:
                 df, err = ek.get_data(_ric,fields )     
+                if err!=None:
+                    raise ValueError(err[0]['message'])
                 peer_rics, err = ek.get_data("Peers({})".format(_ric), ["TR.PrimaryInstrument"])
+                if err!=None:
+                    raise ValueError(err[0]['message'])
                 df1, err = ek.get_data(peer_rics['Primary Instrument RIC'].tolist(), fields)
+                if err!=None:
+                    raise ValueError(err[0]['message'])
                 
-            except ValueError:
-                self.status_label.value = ValueError
+            except ValueError as e:
+                self.status_label.value = str(e)
                 return
                  
-            
-            #check if variables is exist
-            if df.iloc[:,1:].isnull().values.all():
-                self.status_label.value =  err[0]['message']
-                return
-            else:
-                
-                self.output.clear_output()
-
-                self.title_label.value = r'\(\underline{\textbf{Profitability - Peers of %s}}\)'%(df["Company Common Name"][0])
+            self.output.clear_output()
+            self.title_label.value = r'\(\underline{\textbf{Profitability - Peers of %s}}\)'%(df["Company Common Name"][0])
                       
 
-                df = self.reformat_dataframe(df)
-                df1 = self.reformat_dataframe(df1)
-                df_concat = pd.concat((df, df1))                
-                df.loc["Peer Median"] = df_concat.median()
-                df.loc["Peer Average"] = df_concat.mean()
-                df.loc["Peer Median", "Company Name"] = ""
-                df.loc["Peer Average", "Company Name"] = ""
-                display(df)
-                
-                display(VBox([HBox([self.linebreak_label]),HBox([self.title_label]),HBox([self.linebreak_label])]))
-                
-                display(df1)
-                
-               
-                #add table               
-               
+            df = self.reformat_dataframe(df)
+            df1 = self.reformat_dataframe(df1)
+            df_concat = pd.concat((df, df1))                
+            df.loc["Peer Median"] = df_concat.median()
+            df.loc["Peer Average"] = df_concat.mean()
+            df.loc["Peer Median", "Company Name"] = ""
+            df.loc["Peer Average", "Company Name"] = ""
+            display(df)
+            display(VBox([HBox([self.linebreak_label]),HBox([self.title_label]),HBox([self.linebreak_label])]))
+            display(df1)
             #add text to show error
             if err != None:
                 print('Error:')
@@ -649,62 +629,58 @@ class WidgetPeersBalanceSheet:
             #get data
             try:
                 df, err = ek.get_data(_ric,fields )   
+                if err!=None:
+                    raise ValueError(err[0]['message'])
                 peer_rics, err = ek.get_data("Peers({})".format(_ric), ["TR.PrimaryInstrument"])
+                if err!=None:
+                    raise ValueError(err[0]['message'])
                 df1, err = ek.get_data(peer_rics['Primary Instrument RIC'].tolist(), fields)
-            except ValueError:
-                self.status_label.value = ValueError
+                if err!=None:
+                    raise ValueError(err[0]['message'])
+            except ValueError as e:
+                self.status_label.value = str(e)
                 return
                  
             
-            #check if variables is exist
-            if df.iloc[:,1:].isnull().values.all():
-                self.status_label.value =  err[0]['message']
-                return
-            else:
+            self.output.clear_output()
+
+            self.title_label.value = r'\(\underline{\textbf{Balance Sheet - Peers of %s}}\)'%(df["Company Common Name"][0])
+               
+            df_concat = pd.concat((df, df1))
+            df = df.set_index('Instrument')
+            df.loc["Peer Median"] = df_concat.median()
+            df.loc["Peer Average"] = df_concat.mean()
+            df.loc["Peer Median", "Company Common Name"] = ""
+            df.loc["Peer Average", "Company Common Name"] = ""
+            df.columns=["Company Name",
+                       "Debt/Equity Latest",
+                       "Net Debt/EBITDA LTM",
+                       "Cash and Equivalents FY0 (Mil)",
+                       "Current Ratio Latest",
+                       "Quick Ratio Latest",
+                       "Inventory Turns Latest",
+                       "Accts Receivable FY0 (mil)"]
+
+            display(df)
+            display(VBox([HBox([self.linebreak_label]),HBox([self.title_label]),HBox([self.linebreak_label])]))
+            df1 = df1.set_index('Instrument')
+            df1.columns=["Company Name",
+                       "Debt/Equity Latest",
+                       "Net Debt/EBITDA LTM",
+                       "Cash and Equivalents FY0 (Mil)",
+                       "Current Ratio Latest",
+                       "Quick Ratio Latest",
+                       "Inventory Turns Latest",
+                       "Accts Receivable FY0 (mil)"]
+
+            display(df1)
                 
-                self.output.clear_output()
-
-                self.title_label.value = r'\(\underline{\textbf{Balance Sheet - Peers of %s}}\)'%(df["Company Common Name"][0])
-               
-                df_concat = pd.concat((df, df1))
-                df = df.set_index('Instrument')
-                df.loc["Peer Median"] = df_concat.median()
-                df.loc["Peer Average"] = df_concat.mean()
-                df.loc["Peer Median", "Company Common Name"] = ""
-                df.loc["Peer Average", "Company Common Name"] = ""
-                df.columns=["Company Name",
-                           "Debt/Equity Latest",
-                           "Net Debt/EBITDA LTM",
-                           "Cash and Equivalents FY0 (Mil)",
-                           "Current Ratio Latest",
-                           "Quick Ratio Latest",
-                           "Inventory Turns Latest",
-                           "Accts Receivable FY0 (mil)"]
-
-                display(df)
-                display(VBox([HBox([self.linebreak_label]),HBox([self.title_label]),HBox([self.linebreak_label])]))
-                df1 = df1.set_index('Instrument')
-                df1.columns=["Company Name",
-                           "Debt/Equity Latest",
-                           "Net Debt/EBITDA LTM",
-                           "Cash and Equivalents FY0 (Mil)",
-                           "Current Ratio Latest",
-                           "Quick Ratio Latest",
-                           "Inventory Turns Latest",
-                           "Accts Receivable FY0 (mil)"]
-
-                display(df1)
-                
-               
-                #add table               
-               
             #add text to show error
             if err != None:
                 print('Error:')
                 print(err, sep = "\n")
                     
 WidgetPeersBalanceSheet(context)
-
 ```
 
 
@@ -901,39 +877,36 @@ class WidgetPeersGrowth:
             #get data
             try:
                 df, err = ek.get_data(_ric,fields )     
+                if err!=None:
+                    raise ValueError(err[0]['message'])
                 peer_rics, err = ek.get_data("Peers({})".format(_ric), ["TR.PrimaryInstrument"])
+                if err!=None:
+                    raise ValueError(err[0]['message'])
                 df1, err = ek.get_data(peer_rics['Primary Instrument RIC'].tolist(), fields)
-            except ValueError:
-                self.status_label.value = ValueError
+                if err!=None:
+                    raise ValueError(err[0]['message'])
+            except ValueError as e:
+                self.status_label.value = str(e)
                 return
                  
             
-            #check if variables is exist
-            if df.iloc[:,1:].isnull().values.all():
-                self.status_label.value =  err[0]['message']
-                return
-            else:
-                
-                self.output.clear_output()
+            self.output.clear_output()
 
-                self.title_label.value = r'\(\underline{\textbf{Growth - Peers of %s}}\)'%(df["Company Common Name"][0])
+            self.title_label.value = r'\(\underline{\textbf{Growth - Peers of %s}}\)'%(df["Company Common Name"][0])
                
-                df = self.reformat_dataframe(df)
-                df1 = self.reformat_dataframe(df1)
-                df_concat = pd.concat((df, df1))                
-                df.loc["Peer Median"] = df_concat.median()
-                df.loc["Peer Average"] = df_concat.mean()
-                df.loc["Peer Median", "Company Name"] = ""
-                df.loc["Peer Average", "Company Name"] = ""
-                display(df)
+            df = self.reformat_dataframe(df)
+            df1 = self.reformat_dataframe(df1)
+            df_concat = pd.concat((df, df1))                
+            df.loc["Peer Median"] = df_concat.median()
+            df.loc["Peer Average"] = df_concat.mean()
+            df.loc["Peer Median", "Company Name"] = ""
+            df.loc["Peer Average", "Company Name"] = ""
+            display(df)
                 
-                display(VBox([HBox([self.linebreak_label]),HBox([self.title_label]),HBox([self.linebreak_label])]))
+            display(VBox([HBox([self.linebreak_label]),HBox([self.title_label]),HBox([self.linebreak_label])]))
                 
-                display(df1)
+            display(df1)
                 
-               
-                #add table               
-               
             #add text to show error
             if err != None:
                 print('Error:')
